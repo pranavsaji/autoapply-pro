@@ -1,4 +1,7 @@
-from .qa import client
+from apps.api.settings import settings
+from ai.llm import get_chat_client
+
+_client = get_chat_client()
 
 def tailored_cover_letter(profile: dict, job: dict) -> str:
     prompt = f"""
@@ -11,10 +14,8 @@ Role:
 
 Tone: confident, specific, outcomes-focused, and aligned to the company's mission.
 """
-    resp = client.chat.completions.create(
-        model=os.getenv("LLM_MODEL","gpt-4o-mini"),
-        messages=[{"role":"system","content":"You write ATS-friendly cover letters."},
-                  {"role":"user","content":prompt}],
-        temperature=0.4
-    )
-    return resp.choices[0].message.content.strip()
+    msg = [
+        {"role": "system", "content": "You write ATS-friendly cover letters."},
+        {"role": "user", "content": prompt},
+    ]
+    return _client.chat(model=settings.LLM_MODEL, messages=msg, temperature=0.4)

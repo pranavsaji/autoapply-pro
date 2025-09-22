@@ -12,3 +12,10 @@ openai>=1.0.0
 PyYAML
 chromium
 alembic
+email-validator
+pydantic[email]
+python-multipart
+pydantic-settings
+openai
+python-dotenv
+pydantic
