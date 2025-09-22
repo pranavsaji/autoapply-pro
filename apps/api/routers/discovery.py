@@ -1,21 +1,27 @@
-# apps/api/routers/discovery.py
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
+from sqlalchemy.orm import Session
+from sqlalchemy import func, select
+from apps.api.models.db import get_db
 from apps.api.models.domain import Job
+from apps.api.models.sql.jobs import JobRow
+from apps.api.services.discovery_service import find_jobs
 
 router = APIRouter()
 
-# Temporary in-memory sample
-_SAMPLE = [
-    Job(id="gh-1", title="Senior ML Engineer", company="ExampleCo",
-        url="https://boards.greenhouse.io/example/jobs/12345",
-        location="Remote", source="greenhouse", salary=None, description_html=None),
-]
+@router.get("/debug_count")
+def debug_count(db: Session = Depends(get_db)):
+    n = db.execute(select(func.count()).select_from(JobRow)).scalar_one()
+    return {"count": n}
 
 @router.get("/search", response_model=List[Job])
-async def search_jobs(query: str = Query(""), location: Optional[str] = None):
-    q = query.lower()
-    results = [j for j in _SAMPLE if q in j.title.lower()]
-    if location:
-        results = [j for j in results if j.location and location.lower() in j.location.lower()]
-    return results
+def search_jobs(
+    query: Optional[str] = Query(None),
+    location: Optional[str] = Query(None),
+    remote: Optional[bool] = Query(None),
+    source: Optional[str] = Query(None),
+    limit: int = Query(25, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+):
+    return find_jobs(db, query, location, remote, source, limit, offset)

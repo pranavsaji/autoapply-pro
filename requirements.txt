@@ -19,3 +19,5 @@ pydantic-settings
 openai
 python-dotenv
 pydantic
+gradio
+pandas

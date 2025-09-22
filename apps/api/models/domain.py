@@ -1,7 +1,8 @@
 # apps/api/models/domain.py
-from pydantic import BaseModel, HttpUrl, EmailStr, Field
+from pydantic import BaseModel, AnyUrl, EmailStr, Field
 from typing import List, Optional, Dict
 from datetime import date
+from uuid import UUID
 
 class WorkExp(BaseModel):
     company: str
@@ -22,7 +23,7 @@ class Profile(BaseModel):
     email: EmailStr
     phone: Optional[str] = None
     location: Optional[str] = None
-    websites: Dict[str, HttpUrl] = Field(default_factory=dict)
+    websites: Dict[str, AnyUrl] = Field(default_factory=dict)
     summary: Optional[str] = None
     skills: List[str] = Field(default_factory=list)
     work: List[WorkExp] = Field(default_factory=list)
@@ -30,12 +31,13 @@ class Profile(BaseModel):
     resume_path: Optional[str] = None
 
 class Job(BaseModel):
-    id: str
+    id: str | UUID
     title: str
     company: str
-    url: HttpUrl
+    # Relax URL validation so rows with non-strict URLs don’t 500 the API
+    url: AnyUrl | str
     location: Optional[str] = None
-    source: str  # greenhouse | lever | workday | ashby | linkedin
+    source: str  # greenhouse | lever | workday | ashby | linkedin | etc.
     salary: Optional[str] = None
     description_html: Optional[str] = None
 
