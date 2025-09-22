@@ -1,23 +1,27 @@
-import yaml, os
-from ..models.domain import Profile, Job, ApplicationPlan
-from ai.qa import generate_answers
-from ai.cover_letter import tailored_cover_letter
+# apps/api/services/application_service.py
+from typing import Dict, Any
+from apps.api.services.profile_service import get_profile
+from apps.api.models.domain import Job, ApplicationPlan
+from ai.qa import generate_answers  # your existing LLM helper
 
-with open("policies/preferences.yaml") as f:
-    PREFS = yaml.safe_load(f)
+def plan_application(job: Job) -> ApplicationPlan:
+    prof = get_profile()
+    resume_text = prof.resume_text if prof else None
 
-async def plan_application(profile: Profile, job: Job) -> ApplicationPlan:
-    questions = [
-        "Briefly describe your most relevant experience",
-        "Why do you want to work here?",
-        "Are you legally authorized to work in the U.S.?",
-    ]
-    answers = generate_answers(profile.dict(), job.description_html or "", questions)
+    # Your LLM helper should accept resume_text + job description/html
+    plan = generate_answers(
+        job=job.model_dump(),
+        resume_text=resume_text or "",
+    )
+    # Ensure required fields exist even if LLM returns partials
+    plan.setdefault("answers", {})
+    plan.setdefault("cover_letter", None)
+    plan.setdefault("resume_variant", "default")
 
-    cl = None
-    if PREFS.get("application", {}).get("cover_letter") == "tailored":
-        cl = tailored_cover_letter(profile.dict(), job.dict())
-
-    plan = ApplicationPlan(job=job, resume_variant=PREFS.get("application", {}).get("resume_variant", "default"),
-                           cover_letter=cl, answers=answers, requires_hitl=PREFS.get("application", {}).get("approval_mode") == "hitl")
-    return plan
+    return ApplicationPlan(
+        job=job,
+        resume_variant=plan["resume_variant"],
+        cover_letter=plan.get("cover_letter"),
+        answers=plan["answers"],
+        requires_hitl=True,
+    )

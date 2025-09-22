@@ -21,3 +21,5 @@ python-dotenv
 pydantic
 gradio
 pandas
+pypdf
+python-docx

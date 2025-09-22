@@ -29,6 +29,8 @@ class Profile(BaseModel):
     work: List[WorkExp] = Field(default_factory=list)
     education: List[Education] = Field(default_factory=list)
     resume_path: Optional[str] = None
+    # NEW: raw text extracted from resume
+    resume_text: Optional[str] = None
 
 class Job(BaseModel):
     id: str | UUID
