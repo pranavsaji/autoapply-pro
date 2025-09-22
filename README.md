@@ -1,0 +1,1 @@
+# AutoApply Pro — Advanced Job Application Agent (Starter Kit)

@@ -1,0 +1,14 @@
+role_titles:
+  include: ["Senior Machine Learning Engineer", "AI Engineer", "Data Scientist"]
+  exclude: ["Intern", "Unpaid"]
+locations:
+  preferred: ["Remote", "San Francisco Bay Area", "Seattle, WA"]
+  exclude: ["Onsite-only outside USA"]
+salary_min_usd: 160000
+visas:
+  requires_sponsorship: true
+company_size: ["Startup", "Mid", "FAANG"]
+application:
+  cover_letter: "tailored"   # none | generic | tailored
+  resume_variant: "ml_senior"
+  approval_mode: "hitl"       # hitl | auto

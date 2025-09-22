@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on: [db, redis]
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    env_file: .env
+    depends_on: [api, redis]
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: autoapply
+      POSTGRES_USER: autoapply
+      POSTGRES_PASSWORD: password
+    ports: ["5432:5432"]
+
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]

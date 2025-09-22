@@ -1,0 +1,16 @@
+# Per-site guardrails and capabilities
+sites:
+  greenhouse:
+    allow_auto_submit: true
+    max_submissions_per_day: 20
+    delay_seconds_between_actions: 2-4
+  lever:
+    allow_auto_submit: true
+    max_submissions_per_day: 15
+    delay_seconds_between_actions: 3-5
+  workday:
+    allow_auto_submit: false   # Many Workday tenants disallow automation
+    reason: "Use manual approval & assisted fill only"
+  linkedin_jobs:
+    allow_auto_submit: false
+    reason: "Search indexing only; do not automate submissions"

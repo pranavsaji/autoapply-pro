@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+requests
+pydantic
+python-dotenv
+SQLAlchemy
+psycopg[binary]
+redis
+rq
+playwright
+openai>=1.0.0
+PyYAML
+chromium
+alembic

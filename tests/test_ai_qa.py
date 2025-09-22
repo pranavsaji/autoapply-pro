@@ -1,0 +1,2 @@
+from ai.qa import generate_answers
+def test_generate_answers_minimal():    profile = {"full_name":"A B","skills":["Python"]}    jd = "Looking for Python developer."    qs = ["Describe your experience"]    out = generate_answers(profile,jd,qs)    assert qs[0] in out and len(out[qs[0]]) > 0
